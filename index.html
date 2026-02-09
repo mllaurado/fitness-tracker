@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mi Tracker Fitness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            white-space: nowrap;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .scale-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .scale-input input[type="range"] {
+            flex: 1;
+        }
+
+        .scale-value {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .meal-row {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .summary-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .date-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .history-item:hover {
+            background: #e9ecef;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+        }
+
+        .section-title {
+            color: #667eea;
+            margin: 25px 0 15px 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Mi Tracker Fitness</h1>
+            <p>Seguimiento Personal de Nutrición, Entrenamiento y Progreso</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('perfil')">🧍 Perfil</button>
+            <button class="tab" onclick="switchTab('miDieta')">🍽 Mi Dieta</button>
+            <button class="tab" onclick="switchTab('diario')">📅 Registro Diario</button>
+            <button class="tab" onclick="switchTab('semanal')">📈 Resumen Semanal</button>
+            <button class="tab" onclick="switchTab('mensual')">📆 Check Mensual</button>
+            <button class="tab" onclick="switchTab('historial')">📚 Historial</button>
+        </div>
+
+        <!-- PERFIL -->
+        <div id="perfil" class="content active">
+            <h2 class="section-title">🧍 Datos Generales</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="nombre" placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de inicio</label>
+                    <input type="date" id="fechaInicio">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Objetivo principal</label>
+                    <select id="objetivoPrincipal">
+                        <option value="">Selecciona...</option>
+                        <option value="perder_grasa">Perder grasa</option>
+                        <option value="ganar_musculo">Ganar músculo</option>
+                        <option value="rendimiento">Mejorar rendimiento</option>
+                        <option value="salud">Salud general</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Objetivo secundario</label>
+                    <input type="text" id="objetivoSecundario" placeholder="Ej: Más energía">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Horas de sueño objetivo</label>
+                    <input type="number" id="horasSueno" min="4" max="12" step="0.5" value="8">
+                </div>
+                <div class="form-group">
+                    <label>Nivel de actividad diaria</label>
+                    <select id="nivelActividad">
+                        <option value="bajo">Bajo</option>
+                        <option value="medio">Medio</option>
+                        <option value="alto">Alto</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn" onclick="guardarPerfil()">💾 Guardar Perfil</button>
+        </div>
+
+        <!-- MI DIETA -->
+        <div id="miDieta" class="content">
+            <h2 class="section-title">🍽 Mi Plan de Alimentación</h2>
+            <p style="margin-bottom: 20px; color: #666;">Define aquí tu dieta para cada día de la semana. Podrás consultarla en el registro diario.</p>
+            
+            <div class="form-group">
+                <label>Día de la semana</label>
+                <select id="diaDietaSelect" onchange="cargarDietaDia()">
+                    <option value="lunes">Lunes</option>
+                    <option value="martes">Martes</option>
+                    <option value="miercoles">Miércoles</option>
+                    <option value="jueves">Jueves</option>
+                    <option value="viernes">Viernes</option>
+                    <option value="sabado">Sábado</option>
+                    <option value="domingo">Domingo</option>
+                    <option value="general">General (todos los días)</option>
+                </select>
+            </div>
+
+            <div id="dieta-container">
+                <div class="meal-row">
+                    <h4>🌅 Desayuno</h4>
+                    <div class="form-group">
+                        <label>Hora planificada</label>
+                        <input type="time" id="dietaHoraDesayuno">
+                    </div>
+                    <div class="form-group">
+                        <label>Qué debo comer</label>
+                        <textarea id="dietaDesayuno" placeholder="Ej: 80g avena + 1 plátano + 200ml leche desnatada + 1 cucharada mantequilla de cacahuete"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Macros aproximados (opcional)</label>
+                        <input type="text" id="macrosDesayuno" placeholder="Ej: 450 kcal - P: 25g, C: 60g, G: 12g">
+                    </div>
+                </div>
+
+                <div class="meal-row">
+                    <h4>🍎 Media Mañana</h4>
+                    <div class="form-group">
+                        <label>Hora planificada</label>
+                        <input type="time" id="dietaHoraMediaManana">
+                    </div>
+                    <div class="form-group">
+                        <label>Qué debo comer</label>
+                        <textarea id="dietaMediaManana" placeholder="Ej: 1 yogur griego + 30g frutos secos"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Macros aproximados (opcional)</label>
+                        <input type="text" id="macrosMediaManana" placeholder="Ej: 300 kcal - P: 15g, C: 20g, G: 18g">
+                    </div>
+                </div>
+
+                <div class="meal-row">
+                    <h4>🍽️ Comida</h4>
+                    <div class="form-group">
+                        <label>Hora planificada</label>
+                        <input type="time" id="dietaHoraComida">
+                    </div>
+                    <div class="form-group">
+                        <label>Qué debo comer</label>
+                        <textarea id="dietaComida" placeholder="Ej: 150g pechuga pollo + 200g arroz integral + ensalada + 1 cucharada aceite oliva"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Macros aproximados (opcional)</label>
+                        <input type="text" id="macrosComida" placeholder="Ej: 600 kcal - P: 45g, C: 70g, G: 15g">
+                    </div>
+                </div>
+
+                <div class="meal-row">
+                    <h4>🥤 Merienda</h4>
+                    <div class="form-group">
+                        <label>Hora planificada</label>
+                        <input type="time" id="dietaHoraMerienda">
+                    </div>
+                    <div class="form-group">
+                        <label>Qué debo comer</label>
+                        <textarea id="dietaMerienda" placeholder="Ej: Batido proteína (30g) + 1 manzana"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Macros aproximados (opcional)</label>
+                        <input type="text" id="macrosMerienda" placeholder="Ej: 200 kcal - P: 25g, C: 25g, G: 2g">
+                    </div>
+                </div>
+
+                <div class="meal-row">
+                    <h4>🌙 Cena</h4>
+                    <div class="form-group">
+                        <label>Hora planificada</label>
+                        <input type="time" id="dietaHoraCena">
+                    </div>
+                    <div class="form-group">
+                        <label>Qué debo comer</label>
+                        <textarea id="dietaCena" placeholder="Ej: 180g salmón + 250g verduras al vapor + 100g patata"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Macros aproximados (opcional)</label>
+                        <input type="text" id="macrosCena" placeholder="Ej: 500 kcal - P: 40g, C: 35g, G: 22g">
+                    </div>
+                </div>
+
+                <div class="meal-row">
+                    <h4>🍪 Snack Extra (opcional)</h4>
+                    <div class="form-group">
+                        <label>Opciones permitidas</label>
+                        <textarea id="dietaSnackExtra" placeholder="Ej: Si tengo hambre antes de dormir: 1 yogur 0% o 1 onza chocolate 85%"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <h3>💧 Hidratación</h3>
+                <div class="form-group">
+                    <label>Objetivo de agua diario (litros)</label>
+                    <input type="number" id="objetivoAgua" step="0.1" min="0" value="2.5" placeholder="2.5">
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <h3>📊 Totales del día (opcional)</h3>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label>Calorías totales</label>
+                        <input type="number" id="caloriasObjetivo" placeholder="2000">
+                    </div>
+                    <div class="form-group">
+                        <label>Proteínas (g)</label>
+                        <input type="number" id="proteinasObjetivo" placeholder="150">
+                    </div>
+                    <div class="form-group">
+                        <label>Carbohidratos (g)</label>
+                        <input type="number" id="carbohidratosObjetivo" placeholder="200">
+                    </div>
+                    <div class="form-group">
+                        <label>Grasas (g)</label>
+                        <input type="number" id="grasasObjetivo" placeholder="60">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Notas adicionales de la dieta</label>
+                <textarea id="notasDieta" placeholder="Ej: Beber agua antes de cada comida, evitar procesados, permitido 1 capricho el fin de semana..."></textarea>
+            </div>
+
+            <button class="btn" onclick="guardarDieta()">💾 Guardar Dieta del Día</button>
+            <button class="btn btn-secondary" onclick="copiarDietaTodosDias()">📋 Copiar a Todos los Días</button>
+        </div>
+
+        <!-- REGISTRO DIARIO -->
+        <div id="diario" class="content">
+            <div class="date-selector">
+                <label>Fecha:</label>
+                <input type="date" id="fechaDiario">
+                <button class="btn" onclick="cargarDiario()">Cargar</button>
+                <button class="btn btn-secondary" onclick="mostrarDietaHoy()">👁️ Ver Mi Dieta</button>
+            </div>
+
+            <!-- Modal para mostrar la dieta del día -->
+            <div id="dietaModal" style="display:none; background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #667eea;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: #667eea; margin: 0;">📋 Mi Dieta de Hoy</h3>
+                    <button onclick="cerrarDietaModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                </div>
+                <div id="dietaModalContent"></div>
+            </div>
+
+            <h2 class="section-title">🍽 Nutrición</h2>
+            <div id="comidas-container"></div>
+            
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Agua total (litros)</label>
+                    <input type="number" id="aguaTotal" step="0.1" min="0" placeholder="2.5">
+                </div>
+                <div class="form-group">
+                    <label>Antojos / Ansiedad</label>
+                    <input type="text" id="antojos" placeholder="Dulces por la noche...">
+                </div>
+                <div class="form-group">
+                    <label>Digestión</label>
+                    <input type="text" id="digestion" placeholder="Normal, hinchazón...">
+                </div>
+            </div>
+
+            <h2 class="section-title">🏋️ Entrenamiento</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Tipo de entrenamiento</label>
+                    <select id="tipoEntrenamiento">
+                        <option value="">No entrené</option>
+                        <option value="fuerza">Fuerza</option>
+                        <option value="cardio">Cardio</option>
+                        <option value="movilidad">Movilidad</option>
+                        <option value="deporte">Deporte</option>
+                        <option value="mixto">Mixto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Duración (minutos)</label>
+                    <input type="number" id="duracionEntrenamiento" min="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Intensidad (1-5): <span class="scale-value" id="intensidadValue">3</span></label>
+                <input type="range" id="intensidad" min="1" max="5" value="3" oninput="updateScale('intensidad')">
+            </div>
+
+            <div class="form-group">
+                <label>Sensaciones del entrenamiento</label>
+                <textarea id="sensacionesEntrenamiento" placeholder="Me sentí fuerte, tuve buenas sensaciones..."></textarea>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Rendimiento vs último</label>
+                    <select id="rendimiento">
+                        <option value="↓">↓ Peor</option>
+                        <option value="=" selected>=  Igual</option>
+                        <option value="↑">↑ Mejor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Pasos diarios</label>
+                    <input type="number" id="pasosDiarios" min="0" placeholder="10000">
+                </div>
+                <div class="form-group">
+                    <label>Energía antes: <span class="scale-value" id="energiaAntesValue">3</span></label>
+                    <input type="range" id="energiaAntes" min="1" max="5" value="3" oninput="updateScale('energiaAntes')">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Energía después: <span class="scale-value" id="energiaDespuesValue">3</span></label>
+                <input type="range" id="energiaDespues" min="1" max="5" value="3" oninput="updateScale('energiaDespues')">
+            </div>
+
+            <h2 class="section-title">🧠 Bienestar General</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Energía general: <span class="scale-value" id="energiaGeneralValue">3</span></label>
+                    <input type="range" id="energiaGeneral" min="1" max="5" value="3" oninput="updateScale('energiaGeneral')">
+                </div>
+                <div class="form-group">
+                    <label>Estrés: <span class="scale-value" id="estresValue">3</span></label>
+                    <input type="range" id="estres" min="1" max="5" value="3" oninput="updateScale('estres')">
+                </div>
+                <div class="form-group">
+                    <label>Estado de ánimo: <span class="scale-value" id="animoValue">3</span></label>
+                    <input type="range" id="animo" min="1" max="5" value="3" oninput="updateScale('animo')">
+                </div>
+                <div class="form-group">
+                    <label>Motivación: <span class="scale-value" id="motivacionValue">3</span></label>
+                    <input type="range" id="motivacion" min="1" max="5" value="3" oninput="updateScale('motivacion')">
+                </div>
+                <div class="form-group">
+                    <label>Calidad del sueño: <span class="scale-value" id="calidadSuenoValue">3</span></label>
+                    <input type="range" id="calidadSueno" min="1" max="5" value="3" oninput="updateScale('calidadSueno')">
+                </div>
+                <div class="form-group">
+                    <label>Horas dormidas</label>
+                    <input type="number" id="horasDormidas" step="0.5" min="0" max="16" placeholder="8">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Notas mentales/emocionales</label>
+                <textarea id="notasMentales" placeholder="Cómo me siento hoy..."></textarea>
+            </div>
+
+            <button class="btn" onclick="guardarDiario()">💾 Guardar Día</button>
+        </div>
+
+        <!-- RESUMEN SEMANAL -->
+        <div id="semanal" class="content">
+            <div class="date-selector">
+                <label>Semana del:</label>
+                <input type="date" id="fechaSemanal">
+                <button class="btn" onclick="cargarSemanal()">Cargar</button>
+            </div>
+
+            <div class="summary-card">
+                <h3>✅ Lo que hice bien esta semana</h3>
+                <textarea id="logrosSemanales" placeholder="• Entrené 4 días
+• Bebí suficiente agua
+• Dormí bien"></textarea>
+            </div>
+
+            <div class="summary-card">
+                <h3>⚠️ Lo que puedo mejorar</h3>
+                <textarea id="mejorasSemanales" placeholder="• Reducir picoteo nocturno
+• Aumentar proteína en desayuno"></textarea>
+            </div>
+
+            <div class="summary-card">
+                <h3>🍽 Patrón de alimentación observado</h3>
+                <textarea id="patronAlimentacion" placeholder="Más hambre por la tarde, tendencia a picar dulce después de cenar..."></textarea>
+            </div>
+
+            <h3 class="section-title">🏋️ Rendimiento Físico</h3>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Fuerza</label>
+                    <select id="fuerzaSemanal">
+                        <option value="↓">↓ Peor</option>
+                        <option value="=" selected>= Igual</option>
+                        <option value="↑">↑ Mejor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Resistencia</label>
+                    <select id="resistenciaSemanal">
+                        <option value="↓">↓ Peor</option>
+                        <option value="=" selected>= Igual</option>
+                        <option value="↑">↑ Mejor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Energía general</label>
+                    <select id="energiaSemanal">
+                        <option value="↓">↓ Peor</option>
+                        <option value="=" selected>= Igual</option>
+                        <option value="↑">↑ Mejor</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 class="section-title">🧠 Estado General</h3>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Estrés</label>
+                    <select id="estresSemanal">
+                        <option value="↓">↓ Menos</option>
+                        <option value="=" selected>= Igual</option>
+                        <option value="↑">↑ Más</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descanso</label>
+                    <select id="descansoSemanal">
+                        <option value="↓">↓ Peor</option>
+                        <option value="=" selected>= Igual</option>
+                        <option value="↑">↑ Mejor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Motivación</label>
+                    <select id="motivacionSemanal">
+                        <option value="↓">↓ Menos</option>
+                        <option value="=" selected>= Igual</option>
+                        <option value="↑">↑ Más</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <h3>🎯 Ajuste para la próxima semana</h3>
+                <textarea id="ajusteSemanal" placeholder="• Aumentar proteína en desayuno
+• Entrenar 1 día más
+• Reducir café por la tarde"></textarea>
+            </div>
+
+            <button class="btn" onclick="guardarSemanal()">💾 Guardar Resumen Semanal</button>
+        </div>
+
+        <!-- CHECK MENSUAL -->
+        <div id="mensual" class="content">
+            <div class="date-selector">
+                <label>Mes:</label>
+                <input type="month" id="mesMensual">
+                <button class="btn" onclick="cargarMensual()">Cargar</button>
+            </div>
+
+            <div class="summary-card">
+                <h3>🎯 ¿Me acerco a mi objetivo? ¿Cómo lo noto?</h3>
+                <textarea id="progresoObjetivo" placeholder="Sí, noto más energía durante el día, mis entrenamientos son más intensos..."></textarea>
+            </div>
+
+            <div class="summary-card">
+                <h3>👕 ¿Mi ropa queda diferente?</h3>
+                <textarea id="ropaProgreso" placeholder="Los pantalones me quedan más sueltos en la cintura..."></textarea>
+            </div>
+
+            <div class="summary-card">
+                <h3>⚡ ¿Cómo están mis niveles de energía comparado con el mes pasado?</h3>
+                <textarea id="energiaMensual" placeholder="Mucho mejor, me levanto con más ganas y no tengo bajones por la tarde..."></textarea>
+            </div>
+
+            <div class="summary-card">
+                <h3>💪 ¿Qué hábito ha marcado la diferencia?</h3>
+                <textarea id="habitoClave" placeholder="Dormir 8 horas y desayunar con más proteína ha sido clave..."></textarea>
+            </div>
+
+            <h3 class="section-title">📏 Medidas Corporales</h3>
+            <div class="grid-3">
+                <div class="form-group">
+                    <label>Peso (kg)</label>
+                    <input type="number" id="pesoMensual" step="0.1" placeholder="70.5">
+                </div>
+                <div class="form-group">
+                    <label>Cintura (cm)</label>
+                    <input type="number" id="cinturaMensual" step="0.1" placeholder="80">
+                </div>
+                <div class="form-group">
+                    <label>Cadera (cm)</label>
+                    <input type="number" id="caderaMensual" step="0.1" placeholder="95">
+                </div>
+                <div class="form-group">
+                    <label>Pecho (cm)</label>
+                    <input type="number" id="pechoMensual" step="0.1" placeholder="90">
+                </div>
+                <div class="form-group">
+                    <label>Muslo (cm)</label>
+                    <input type="number" id="musloMensual" step="0.1" placeholder="55">
+                </div>
+                <div class="form-group">
+                    <label>Brazo (cm)</label>
+                    <input type="number" id="brazoMensual" step="0.1" placeholder="32">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>¿Tomaste fotos de progreso?</label>
+                <select id="fotosMensual">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="guardarMensual()">💾 Guardar Check Mensual</button>
+        </div>
+
+        <!-- HISTORIAL -->
+        <div id="historial" class="content">
+            <h2>📚 Historial de Registros</h2>
+            <div class="grid-2">
+                <button class="btn" onclick="mostrarHistorial('diarios')">Ver Días</button>
+                <button class="btn" onclick="mostrarHistorial('semanales')">Ver Semanas</button>
+                <button class="btn" onclick="mostrarHistorial('mensuales')">Ver Meses</button>
+                <button class="btn btn-secondary" onclick="exportarDatos()">📥 Exportar Datos</button>
+            </div>
+            <div id="historial-container" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar fechas
+        document.getElementById('fechaDiario').valueAsDate = new Date();
+        document.getElementById('fechaSemanal').valueAsDate = new Date();
+        document.getElementById('mesMensual').value = new Date().toISOString().slice(0, 7);
+
+        // Generar inputs de comidas
+        function generarComidas() {
+            const comidas = ['Desayuno', 'Media mañana', 'Comida', 'Merienda', 'Cena', 'Snacks extra'];
+            const container = document.getElementById('comidas-container');
+            
+            comidas.forEach((comida, index) => {
+                container.innerHTML += `
+                    <div class="meal-row">
+                        <h4>${comida}</h4>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Hora</label>
+                                <input type="time" id="hora_${index}">
+                            </div>
+                            <div class="form-group">
+                                <label>Qué comí</label>
+                                <input type="text" id="queComi_${index}" placeholder="Avena con frutas...">
+                            </div>
+                            <div class="form-group">
+                                <label>Cantidad aproximada</label>
+                                <input type="text" id="cantidad_${index}" placeholder="1 plato, 200g...">
+                            </div>
+                            <div class="form-group">
+                                <label>Hambre (1-5): <span class="scale-value" id="hambre_${index}Value">3</span></label>
+                                <input type="range" id="hambre_${index}" min="1" max="5" value="3" oninput="updateScaleMeal('hambre_${index}')">
+                            </div>
+                            <div class="form-group">
+                                <label>Energía después (1-5): <span class="scale-value" id="energiaDespues_${index}Value">3</span></label>
+                                <input type="range" id="energiaDespues_${index}" min="1" max="5" value="3" oninput="updateScaleMeal('energiaDespues_${index}')">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        generarComidas();
+
+        function updateScale(id) {
+            const value = document.getElementById(id).value;
+            document.getElementById(id + 'Value').textContent = value;
+        }
+
+        function updateScaleMeal(id) {
+            const value = document.getElementById(id).value;
+            document.getElementById(id + 'Value').textContent = value;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // GUARDAR FUNCIONES
+        function guardarPerfil() {
+            const perfil = {
+                nombre: document.getElementById('nombre').value,
+                fechaInicio: document.getElementById('fechaInicio').value,
+                objetivoPrincipal: document.getElementById('objetivoPrincipal').value,
+                objetivoSecundario: document.getElementById('objetivoSecundario').value,
+                horasSueno: document.getElementById('horasSueno').value,
+                nivelActividad: document.getElementById('nivelActividad').value
+            };
+            
+            localStorage.setItem('perfil', JSON.stringify(perfil));
+            mostrarMensaje('✅ Perfil guardado correctamente');
+        }
+
+        function guardarDiario() {
+            const fecha = document.getElementById('fechaDiario').value;
+            const comidas = [];
+            
+            for (let i = 0; i < 6; i++) {
+                comidas.push({
+                    hora: document.getElementById(`hora_${i}`).value,
+                    queComi: document.getElementById(`queComi_${i}`).value,
+                    cantidad: document.getElementById(`cantidad_${i}`).value,
+                    hambre: document.getElementById(`hambre_${i}`).value,
+                    energiaDespues: document.getElementById(`energiaDespues_${i}`).value
+                });
+            }
+
+            const diario = {
+                fecha,
+                comidas,
+                aguaTotal: document.getElementById('aguaTotal').value,
+                antojos: document.getElementById('antojos').value,
+                digestion: document.getElementById('digestion').value,
+                tipoEntrenamiento: document.getElementById('tipoEntrenamiento').value,
+                duracionEntrenamiento: document.getElementById('duracionEntrenamiento').value,
+                intensidad: document.getElementById('intensidad').value,
+                sensacionesEntrenamiento: document.getElementById('sensacionesEntrenamiento').value,
+                rendimiento: document.getElementById('rendimiento').value,
+                pasosDiarios: document.getElementById('pasosDiarios').value,
+                energiaAntes: document.getElementById('energiaAntes').value,
+                energiaDespues: document.getElementById('energiaDespues').value,
+                energiaGeneral: document.getElementById('energiaGeneral').value,
+                estres: document.getElementById('estres').value,
+                animo: document.getElementById('animo').value,
+                motivacion: document.getElementById('motivacion').value,
+                calidadSueno: document.getElementById('calidadSueno').value,
+                horasDormidas: document.getElementById('horasDormidas').value,
+                notasMentales: document.getElementById('notasMentales').value
+            };
+
+            const diarios = JSON.parse(localStorage.getItem('diarios') || '{}');
+            diarios[fecha] = diario;
+            localStorage.setItem('diarios', JSON.stringify(diarios));
+            
+            mostrarMensaje('✅ Día guardado correctamente');
+        }
+
+        function guardarSemanal() {
+            const fecha = document.getElementById('fechaSemanal').value;
+            const semanal = {
+                fecha,
+                logros: document.getElementById('logrosSemanales').value,
+                mejoras: document.getElementById('mejorasSemanales').value,
+                patronAlimentacion: document.getElementById('patronAlimentacion').value,
+                fuerza: document.getElementById('fuerzaSemanal').value,
+                resistencia: document.getElementById('resistenciaSemanal').value,
+                energia: document.getElementById('energiaSemanal').value,
+                estres: document.getElementById('estresSemanal').value,
+                descanso: document.getElementById('descansoSemanal').value,
+                motivacion: document.getElementById('motivacionSemanal').value,
+                ajuste: document.getElementById('ajusteSemanal').value
+            };
+
+            const semanales = JSON.parse(localStorage.getItem('semanales') || '{}');
+            semanales[fecha] = semanal;
+            localStorage.setItem('semanales', JSON.stringify(semanales));
+            
+            mostrarMensaje('✅ Resumen semanal guardado correctamente');
+        }
+
+        function guardarMensual() {
+            const mes = document.getElementById('mesMensual').value;
+            const mensual = {
+                mes,
+                progresoObjetivo: document.getElementById('progresoObjetivo').value,
+                ropaProgreso: document.getElementById('ropaProgreso').value,
+                energiaMensual: document.getElementById('energiaMensual').value,
+                habitoClave: document.getElementById('habitoClave').value,
+                peso: document.getElementById('pesoMensual').value,
+                cintura: document.getElementById('cinturaMensual').value,
+                cadera: document.getElementById('caderaMensual').value,
+                pecho: document.getElementById('pechoMensual').value,
+                muslo: document.getElementById('musloMensual').value,
+                brazo: document.getElementById('brazoMensual').value,
+                fotos: document.getElementById('fotosMensual').value
+            };
+
+            const mensuales = JSON.parse(localStorage.getItem('mensuales') || '{}');
+            mensuales[mes] = mensual;
+            localStorage.setItem('mensuales', JSON.stringify(mensuales));
+            
+            mostrarMensaje('✅ Check mensual guardado correctamente');
+        }
+
+        // CARGAR FUNCIONES
+        function cargarPerfil() {
+            const perfil = JSON.parse(localStorage.getItem('perfil') || '{}');
+            if (perfil.nombre) {
+                document.getElementById('nombre').value = perfil.nombre || '';
+                document.getElementById('fechaInicio').value = perfil.fechaInicio || '';
+                document.getElementById('objetivoPrincipal').value = perfil.objetivoPrincipal || '';
+                document.getElementById('objetivoSecundario').value = perfil.objetivoSecundario || '';
+                document.getElementById('horasSueno').value = perfil.horasSueno || '8';
+                document.getElementById('nivelActividad').value = perfil.nivelActividad || 'medio';
+            }
+        }
+
+        function cargarDiario() {
+            const fecha = document.getElementById('fechaDiario').value;
+            const diarios = JSON.parse(localStorage.getItem('diarios') || '{}');
+            const diario = diarios[fecha];
+            
+            if (diario) {
+                // Cargar comidas
+                diario.comidas.forEach((comida, i) => {
+                    document.getElementById(`hora_${i}`).value = comida.hora || '';
+                    document.getElementById(`queComi_${i}`).value = comida.queComi || '';
+                    document.getElementById(`cantidad_${i}`).value = comida.cantidad || '';
+                    document.getElementById(`hambre_${i}`).value = comida.hambre || '3';
+                    document.getElementById(`energiaDespues_${i}`).value = comida.energiaDespues || '3';
+                    updateScaleMeal(`hambre_${i}`);
+                    updateScaleMeal(`energiaDespues_${i}`);
+                });
+
+                // Cargar resto de datos
+                document.getElementById('aguaTotal').value = diario.aguaTotal || '';
+                document.getElementById('antojos').value = diario.antojos || '';
+                document.getElementById('digestion').value = diario.digestion || '';
+                document.getElementById('tipoEntrenamiento').value = diario.tipoEntrenamiento || '';
+                document.getElementById('duracionEntrenamiento').value = diario.duracionEntrenamiento || '';
+                document.getElementById('intensidad').value = diario.intensidad || '3';
+                document.getElementById('sensacionesEntrenamiento').value = diario.sensacionesEntrenamiento || '';
+                document.getElementById('rendimiento').value = diario.rendimiento || '=';
+                document.getElementById('pasosDiarios').value = diario.pasosDiarios || '';
+                document.getElementById('energiaAntes').value = diario.energiaAntes || '3';
+                document.getElementById('energiaDespues').value = diario.energiaDespues || '3';
+                document.getElementById('energiaGeneral').value = diario.energiaGeneral || '3';
+                document.getElementById('estres').value = diario.estres || '3';
+                document.getElementById('animo').value = diario.animo || '3';
+                document.getElementById('motivacion').value = diario.motivacion || '3';
+                document.getElementById('calidadSueno').value = diario.calidadSueno || '3';
+                document.getElementById('horasDormidas').value = diario.horasDormidas || '';
+                document.getElementById('notasMentales').value = diario.notasMentales || '';
+
+                // Actualizar displays
+                ['intensidad', 'energiaAntes', 'energiaDespues', 'energiaGeneral', 'estres', 'animo', 'motivacion', 'calidadSueno'].forEach(updateScale);
+                
+                mostrarMensaje('📖 Día cargado correctamente');
+            } else {
+                mostrarMensaje('ℹ️ No hay datos guardados para esta fecha');
+            }
+        }
+
+        function cargarSemanal() {
+            const fecha = document.getElementById('fechaSemanal').value;
+            const semanales = JSON.parse(localStorage.getItem('semanales') || '{}');
+            const semanal = semanales[fecha];
+            
+            if (semanal) {
+                document.getElementById('logrosSemanales').value = semanal.logros || '';
+                document.getElementById('mejorasSemanales').value = semanal.mejoras || '';
+                document.getElementById('patronAlimentacion').value = semanal.patronAlimentacion || '';
+                document.getElementById('fuerzaSemanal').value = semanal.fuerza || '=';
+                document.getElementById('resistenciaSemanal').value = semanal.resistencia || '=';
+                document.getElementById('energiaSemanal').value = semanal.energia || '=';
+                document.getElementById('estresSemanal').value = semanal.estres || '=';
+                document.getElementById('descansoSemanal').value = semanal.descanso || '=';
+                document.getElementById('motivacionSemanal').value = semanal.motivacion || '=';
+                document.getElementById('ajusteSemanal').value = semanal.ajuste || '';
+                
+                mostrarMensaje('📖 Semana cargada correctamente');
+            } else {
+                mostrarMensaje('ℹ️ No hay datos guardados para esta semana');
+            }
+        }
+
+        function cargarMensual() {
+            const mes = document.getElementById('mesMensual').value;
+            const mensuales = JSON.parse(localStorage.getItem('mensuales') || '{}');
+            const mensual = mensuales[mes];
+            
+            if (mensual) {
+                document.getElementById('progresoObjetivo').value = mensual.progresoObjetivo || '';
+                document.getElementById('ropaProgreso').value = mensual.ropaProgreso || '';
+                document.getElementById('energiaMensual').value = mensual.energiaMensual || '';
+                document.getElementById('habitoClave').value = mensual.habitoClave || '';
+                document.getElementById('pesoMensual').value = mensual.peso || '';
+                document.getElementById('cinturaMensual').value = mensual.cintura || '';
+                document.getElementById('caderaMensual').value = mensual.cadera || '';
+                document.getElementById('pechoMensual').value = mensual.pecho || '';
+                document.getElementById('musloMensual').value = mensual.muslo || '';
+                document.getElementById('brazoMensual').value = mensual.brazo || '';
+                document.getElementById('fotosMensual').value = mensual.fotos || 'no';
+                
+                mostrarMensaje('📖 Mes cargado correctamente');
+            } else {
+                mostrarMensaje('ℹ️ No hay datos guardados para este mes');
+            }
+        }
+
+        function mostrarHistorial(tipo) {
+            const container = document.getElementById('historial-container');
+            let data = {};
+            let titulo = '';
+            
+            switch(tipo) {
+                case 'diarios':
+                    data = JSON.parse(localStorage.getItem('diarios') || '{}');
+                    titulo = '📅 Registros Diarios';
+                    break;
+                case 'semanales':
+                    data = JSON.parse(localStorage.getItem('semanales') || '{}');
+                    titulo = '📈 Resúmenes Semanales';
+                    break;
+                case 'mensuales':
+                    data = JSON.parse(localStorage.getItem('mensuales') || '{}');
+                    titulo = '📆 Checks Mensuales';
+                    break;
+            }
+            
+            let html = `<h3>${titulo}</h3>`;
+            const fechas = Object.keys(data).sort().reverse();
+            
+            if (fechas.length === 0) {
+                html += '<p>No hay registros guardados aún.</p>';
+            } else {
+                fechas.forEach(fecha => {
+                    html += `
+                        <div class="history-item" onclick="cargarDesdeHistorial('${tipo}', '${fecha}')">
+                            <strong>${fecha}</strong>
+                            ${tipo === 'diarios' ? `- ${data[fecha].tipoEntrenamiento || 'Sin entrenamiento'}` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function cargarDesdeHistorial(tipo, fecha) {
+            switch(tipo) {
+                case 'diarios':
+                    document.getElementById('fechaDiario').value = fecha;
+                    switchTab('diario');
+                    setTimeout(() => cargarDiario(), 100);
+                    break;
+                case 'semanales':
+                    document.getElementById('fechaSemanal').value = fecha;
+                    switchTab('semanal');
+                    setTimeout(() => cargarSemanal(), 100);
+                    break;
+                case 'mensuales':
+                    document.getElementById('mesMensual').value = fecha;
+                    switchTab('mensual');
+                    setTimeout(() => cargarMensual(), 100);
+                    break;
+            }
+        }
+
+        function exportarDatos() {
+            const datos = {
+                perfil: JSON.parse(localStorage.getItem('perfil') || '{}'),
+                diarios: JSON.parse(localStorage.getItem('diarios') || '{}'),
+                semanales: JSON.parse(localStorage.getItem('semanales') || '{}'),
+                mensuales: JSON.parse(localStorage.getItem('mensuales') || '{}')
+            };
+            
+            const blob = new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `fitness-tracker-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            mostrarMensaje('✅ Datos exportados correctamente');
+        }
+
+        function mostrarMensaje(texto) {
+            const mensaje = document.createElement('div');
+            mensaje.className = 'success-message';
+            mensaje.textContent = texto;
+            
+            const container = document.querySelector('.content.active');
+            container.insertBefore(mensaje, container.firstChild);
+            
+            setTimeout(() => mensaje.remove(), 3000);
+        }
+
+        // Cargar perfil al iniciar
+        cargarPerfil();
+
+        // FUNCIONES DE DIETA
+        function guardarDieta() {
+            const dia = document.getElementById('diaDietaSelect').value;
+            const dieta = {
+                desayuno: {
+                    hora: document.getElementById('dietaHoraDesayuno').value,
+                    alimentos: document.getElementById('dietaDesayuno').value,
+                    macros: document.getElementById('macrosDesayuno').value
+                },
+                mediaManana: {
+                    hora: document.getElementById('dietaHoraMediaManana').value,
+                    alimentos: document.getElementById('dietaMediaManana').value,
+                    macros: document.getElementById('macrosMediaManana').value
+                },
+                comida: {
+                    hora: document.getElementById('dietaHoraComida').value,
+                    alimentos: document.getElementById('dietaComida').value,
+                    macros: document.getElementById('macrosComida').value
+                },
+                merienda: {
+                    hora: document.getElementById('dietaHoraMerienda').value,
+                    alimentos: document.getElementById('dietaMerienda').value,
+                    macros: document.getElementById('macrosMerienda').value
+                },
+                cena: {
+                    hora: document.getElementById('dietaHoraCena').value,
+                    alimentos: document.getElementById('dietaCena').value,
+                    macros: document.getElementById('macrosCena').value
+                },
+                snackExtra: {
+                    alimentos: document.getElementById('dietaSnackExtra').value
+                },
+                objetivoAgua: document.getElementById('objetivoAgua').value,
+                caloriasObjetivo: document.getElementById('caloriasObjetivo').value,
+                proteinasObjetivo: document.getElementById('proteinasObjetivo').value,
+                carbohidratosObjetivo: document.getElementById('carbohidratosObjetivo').value,
+                grasasObjetivo: document.getElementById('grasasObjetivo').value,
+                notas: document.getElementById('notasDieta').value
+            };
+
+            const dietas = JSON.parse(localStorage.getItem('dietas') || '{}');
+            dietas[dia] = dieta;
+            localStorage.setItem('dietas', JSON.stringify(dietas));
+            
+            mostrarMensaje('✅ Dieta del ' + dia + ' guardada correctamente');
+        }
+
+        function cargarDietaDia() {
+            const dia = document.getElementById('diaDietaSelect').value;
+            const dietas = JSON.parse(localStorage.getItem('dietas') || '{}');
+            const dieta = dietas[dia];
+
+            if (dieta) {
+                document.getElementById('dietaHoraDesayuno').value = dieta.desayuno?.hora || '';
+                document.getElementById('dietaDesayuno').value = dieta.desayuno?.alimentos || '';
+                document.getElementById('macrosDesayuno').value = dieta.desayuno?.macros || '';
+                
+                document.getElementById('dietaHoraMediaManana').value = dieta.mediaManana?.hora || '';
+                document.getElementById('dietaMediaManana').value = dieta.mediaManana?.alimentos || '';
+                document.getElementById('macrosMediaManana').value = dieta.mediaManana?.macros || '';
+                
+                document.getElementById('dietaHoraComida').value = dieta.comida?.hora || '';
+                document.getElementById('dietaComida').value = dieta.comida?.alimentos || '';
+                document.getElementById('macrosComida').value = dieta.comida?.macros || '';
+                
+                document.getElementById('dietaHoraMerienda').value = dieta.merienda?.hora || '';
+                document.getElementById('dietaMerienda').value = dieta.merienda?.alimentos || '';
+                document.getElementById('macrosMerienda').value = dieta.merienda?.macros || '';
+                
+                document.getElementById('dietaHoraCena').value = dieta.cena?.hora || '';
+                document.getElementById('dietaCena').value = dieta.cena?.alimentos || '';
+                document.getElementById('macrosCena').value = dieta.cena?.macros || '';
+                
+                document.getElementById('dietaSnackExtra').value = dieta.snackExtra?.alimentos || '';
+                document.getElementById('objetivoAgua').value = dieta.objetivoAgua || '2.5';
+                document.getElementById('caloriasObjetivo').value = dieta.caloriasObjetivo || '';
+                document.getElementById('proteinasObjetivo').value = dieta.proteinasObjetivo || '';
+                document.getElementById('carbohidratosObjetivo').value = dieta.carbohidratosObjetivo || '';
+                document.getElementById('grasasObjetivo').value = dieta.grasasObjetivo || '';
+                document.getElementById('notasDieta').value = dieta.notas || '';
+            } else {
+                // Limpiar campos si no hay dieta guardada
+                limpiarFormularioDieta();
+            }
+        }
+
+        function limpiarFormularioDieta() {
+            const campos = ['dietaHoraDesayuno', 'dietaDesayuno', 'macrosDesayuno',
+                           'dietaHoraMediaManana', 'dietaMediaManana', 'macrosMediaManana',
+                           'dietaHoraComida', 'dietaComida', 'macrosComida',
+                           'dietaHoraMerienda', 'dietaMerienda', 'macrosMerienda',
+                           'dietaHoraCena', 'dietaCena', 'macrosCena',
+                           'dietaSnackExtra', 'caloriasObjetivo', 'proteinasObjetivo',
+                           'carbohidratosObjetivo', 'grasasObjetivo', 'notasDieta'];
+            
+            campos.forEach(campo => {
+                const el = document.getElementById(campo);
+                if (el) el.value = '';
+            });
+            document.getElementById('objetivoAgua').value = '2.5';
+        }
+
+        function copiarDietaTodosDias() {
+            if (!confirm('¿Quieres copiar esta dieta a todos los días de la semana?')) return;
+            
+            const diaActual = document.getElementById('diaDietaSelect').value;
+            const dietas = JSON.parse(localStorage.getItem('dietas') || '{}');
+            const dietaActual = dietas[diaActual];
+            
+            if (!dietaActual) {
+                mostrarMensaje('⚠️ Primero guarda la dieta del día actual');
+                return;
+            }
+
+            const dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+            dias.forEach(dia => {
+                dietas[dia] = JSON.parse(JSON.stringify(dietaActual)); // Copia profunda
+            });
+            
+            localStorage.setItem('dietas', JSON.stringify(dietas));
+            mostrarMensaje('✅ Dieta copiada a todos los días de la semana');
+        }
+
+        function mostrarDietaHoy() {
+            const fecha = new Date(document.getElementById('fechaDiario').value);
+            const dias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+            const diaSemana = dias[fecha.getDay()];
+            
+            const dietas = JSON.parse(localStorage.getItem('dietas') || '{}');
+            let dieta = dietas[diaSemana] || dietas['general'];
+            
+            if (!dieta) {
+                mostrarMensaje('ℹ️ No hay dieta planificada para este día. Ve a "Mi Dieta" para crearla.');
+                return;
+            }
+
+            const modal = document.getElementById('dietaModal');
+            const content = document.getElementById('dietaModalContent');
+            
+            let html = `<p style="color: #666; margin-bottom: 15px;">Plan para <strong>${diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)}</strong></p>`;
+            
+            const comidas = [
+                { nombre: '🌅 Desayuno', data: dieta.desayuno },
+                { nombre: '🍎 Media Mañana', data: dieta.mediaManana },
+                { nombre: '🍽️ Comida', data: dieta.comida },
+                { nombre: '🥤 Merienda', data: dieta.merienda },
+                { nombre: '🌙 Cena', data: dieta.cena }
+            ];
+
+            comidas.forEach(comida => {
+                if (comida.data?.alimentos) {
+                    html += `
+                        <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                            <strong>${comida.nombre}</strong> ${comida.data.hora ? `- ${comida.data.hora}` : ''}<br>
+                            <span style="color: #555;">${comida.data.alimentos}</span>
+                            ${comida.data.macros ? `<br><small style="color: #888;">${comida.data.macros}</small>` : ''}
+                        </div>
+                    `;
+                }
+            });
+
+            if (dieta.snackExtra?.alimentos) {
+                html += `
+                    <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                        <strong>🍪 Snack Extra</strong><br>
+                        <span style="color: #555;">${dieta.snackExtra.alimentos}</span>
+                    </div>
+                `;
+            }
+
+            if (dieta.objetivoAgua) {
+                html += `<p style="margin-top: 10px;"><strong>💧 Agua:</strong> ${dieta.objetivoAgua}L</p>`;
+            }
+
+            if (dieta.caloriasObjetivo) {
+                html += `<p><strong>📊 Objetivo:</strong> ${dieta.caloriasObjetivo} kcal`;
+                if (dieta.proteinasObjetivo || dieta.carbohidratosObjetivo || dieta.grasasObjetivo) {
+                    html += ` (P: ${dieta.proteinasObjetivo || '-'}g, C: ${dieta.carbohidratosObjetivo || '-'}g, G: ${dieta.grasasObjetivo || '-'}g)`;
+                }
+                html += `</p>`;
+            }
+
+            if (dieta.notas) {
+                html += `<p style="margin-top: 10px; font-style: italic; color: #666;"><strong>📝 Notas:</strong> ${dieta.notas}</p>`;
+            }
+
+            content.innerHTML = html;
+            modal.style.display = 'block';
+        }
+
+        function cerrarDietaModal() {
+            document.getElementById('dietaModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
