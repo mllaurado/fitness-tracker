@@ -1113,8 +1113,274 @@
             setTimeout(() => mensaje.remove(), 3000);
         }
 
-        // Cargar perfil al iniciar
+        // DATOS PRECARGADOS DE LA DIETA
+        function cargarDietaPrecargada() {
+            const dietasPrecargadas = {
+                lunes: {
+                    desayuno: {
+                        hora: "08:00",
+                        alimentos: "Huevos: 1 entero + 3 claras\nAvena: 60 g\nManzana: 1 mediana",
+                        macros: ""
+                    },
+                    mediaManana: {
+                        hora: "11:00",
+                        alimentos: "Yogur griego natural: 170 g\nPan integral: 40 g",
+                        macros: ""
+                    },
+                    comida: {
+                        hora: "14:00",
+                        alimentos: "Pollo: 150 g\nArroz integral: 80 g\nBrócoli salteado: 200-300 g",
+                        macros: ""
+                    },
+                    merienda: {
+                        hora: "17:30",
+                        alimentos: "Plátano: 1 mediano\nFrutos secos: 15 g",
+                        macros: ""
+                    },
+                    cena: {
+                        hora: "21:00",
+                        alimentos: "Salmón: 150 g\nBoniato: 200 g\nVerduras al horno",
+                        macros: ""
+                    },
+                    snackExtra: {
+                        alimentos: ""
+                    },
+                    objetivoAgua: "2.5",
+                    caloriasObjetivo: "",
+                    proteinasObjetivo: "",
+                    carbohidratosObjetivo: "",
+                    grasasObjetivo: "",
+                    notas: "Post-entreno: desayuno completo"
+                },
+                martes: {
+                    desayuno: {
+                        hora: "08:00",
+                        alimentos: "Batido: proteína (1 scoop)\nAvena: 50 g\nPlátano: 1 pequeño\nHuevo cocido: 1",
+                        macros: ""
+                    },
+                    mediaManana: {
+                        hora: "11:00",
+                        alimentos: "Queso fresco batido: 200 g\nPan integral: 40 g",
+                        macros: ""
+                    },
+                    comida: {
+                        hora: "14:00",
+                        alimentos: "Ternera magra: 150 g\nQuinoa: 70 g\nJudías verdes salteadas",
+                        macros: ""
+                    },
+                    merienda: {
+                        hora: "17:30",
+                        alimentos: "Yogur natural: 125 g\nManzana: 1",
+                        macros: ""
+                    },
+                    cena: {
+                        hora: "21:00",
+                        alimentos: "Merluza: 160 g\nPatata: 250 g\nCalabacín y champiñones",
+                        macros: ""
+                    },
+                    snackExtra: {
+                        alimentos: ""
+                    },
+                    objetivoAgua: "2.5",
+                    caloriasObjetivo: "",
+                    proteinasObjetivo: "",
+                    carbohidratosObjetivo: "",
+                    grasasObjetivo: "",
+                    notas: ""
+                },
+                miercoles: {
+                    desayuno: {
+                        hora: "08:00",
+                        alimentos: "2 huevos + 2 claras\nPan integral: 70 g\nNaranja o pera: 1",
+                        macros: ""
+                    },
+                    mediaManana: {
+                        hora: "11:00",
+                        alimentos: "Yogur griego: 170 g\nCopos de avena: 30 g",
+                        macros: ""
+                    },
+                    comida: {
+                        hora: "14:00",
+                        alimentos: "Pavo: 150 g\nLentejas secas: 70 g\nVerduras salteadas",
+                        macros: ""
+                    },
+                    merienda: {
+                        hora: "17:30",
+                        alimentos: "Batido de proteína\nFrutos secos: 15 g",
+                        macros: ""
+                    },
+                    cena: {
+                        hora: "21:00",
+                        alimentos: "Tofu: 180 g\nArroz basmati: 60 g\nVerduras asiáticas salteadas",
+                        macros: ""
+                    },
+                    snackExtra: {
+                        alimentos: ""
+                    },
+                    objetivoAgua: "2.5",
+                    caloriasObjetivo: "",
+                    proteinasObjetivo: "",
+                    carbohidratosObjetivo: "",
+                    grasasObjetivo: "",
+                    notas: ""
+                },
+                jueves: {
+                    desayuno: {
+                        hora: "08:00",
+                        alimentos: "Avena: 60 g con leche\nFrutos rojos\nHuevo cocido: 1",
+                        macros: ""
+                    },
+                    mediaManana: {
+                        hora: "11:00",
+                        alimentos: "Yogur natural: 170 g\nPan integral: 40 g",
+                        macros: ""
+                    },
+                    comida: {
+                        hora: "14:00",
+                        alimentos: "Bacalao: 160 g\nPatata: 250 g\nBrócoli al vapor",
+                        macros: ""
+                    },
+                    merienda: {
+                        hora: "17:30",
+                        alimentos: "Kiwi: 1\nFrutos secos: 15 g",
+                        macros: ""
+                    },
+                    cena: {
+                        hora: "21:00",
+                        alimentos: "Pollo: 150 g\nArroz integral: 60 g\nVerduras salteadas",
+                        macros: ""
+                    },
+                    snackExtra: {
+                        alimentos: ""
+                    },
+                    objetivoAgua: "2.5",
+                    caloriasObjetivo: "",
+                    proteinasObjetivo: "",
+                    carbohidratosObjetivo: "",
+                    grasasObjetivo: "",
+                    notas: ""
+                },
+                viernes: {
+                    desayuno: {
+                        hora: "08:00",
+                        alimentos: "Tortilla (1 huevo + 3 claras)\nPan integral: 70 g\nManzana: 1",
+                        macros: ""
+                    },
+                    mediaManana: {
+                        hora: "11:00",
+                        alimentos: "Yogur natural\nAvena: 30 g",
+                        macros: ""
+                    },
+                    comida: {
+                        hora: "14:00",
+                        alimentos: "Hamburguesa de pavo: 150 g\nBoniato: 220 g\nVerduras al horno",
+                        macros: ""
+                    },
+                    merienda: {
+                        hora: "17:30",
+                        alimentos: "Plátano pequeño\nFrutos secos: 15 g",
+                        macros: ""
+                    },
+                    cena: {
+                        hora: "21:00",
+                        alimentos: "Pescado blanco: 160 g\nQuinoa: 60 g\nCalabacín y cebolla",
+                        macros: ""
+                    },
+                    snackExtra: {
+                        alimentos: ""
+                    },
+                    objetivoAgua: "2.5",
+                    caloriasObjetivo: "",
+                    proteinasObjetivo: "",
+                    carbohidratosObjetivo: "",
+                    grasasObjetivo: "",
+                    notas: ""
+                },
+                sabado: {
+                    desayuno: {
+                        hora: "09:00",
+                        alimentos: "Pancakes de avena\nAvena: 60 g\n1 huevo + 2 claras\nFruta",
+                        macros: ""
+                    },
+                    mediaManana: {
+                        hora: "11:30",
+                        alimentos: "Yogur griego: 170 g\nPan integral: 40 g",
+                        macros: ""
+                    },
+                    comida: {
+                        hora: "14:30",
+                        alimentos: "Pollo: 160 g\nArroz blanco: 90 g\nVerduras salteadas",
+                        macros: ""
+                    },
+                    merienda: {
+                        hora: "18:00",
+                        alimentos: "Batido de proteína\nManzana",
+                        macros: ""
+                    },
+                    cena: {
+                        hora: "21:30",
+                        alimentos: "Atún natural: 160 g\nPatata: 200 g\nVerduras al vapor",
+                        macros: ""
+                    },
+                    snackExtra: {
+                        alimentos: ""
+                    },
+                    objetivoAgua: "2.5",
+                    caloriasObjetivo: "",
+                    proteinasObjetivo: "",
+                    carbohidratosObjetivo: "",
+                    grasasObjetivo: "",
+                    notas: ""
+                },
+                domingo: {
+                    desayuno: {
+                        hora: "09:00",
+                        alimentos: "2 huevos + 2 claras\nPan integral: 70 g\nFruta",
+                        macros: ""
+                    },
+                    mediaManana: {
+                        hora: "11:30",
+                        alimentos: "Yogur natural\nAvena: 30 g",
+                        macros: ""
+                    },
+                    comida: {
+                        hora: "14:30",
+                        alimentos: "Salmón: 150 g\nQuinoa: 70 g\nVerduras al horno",
+                        macros: ""
+                    },
+                    merienda: {
+                        hora: "18:00",
+                        alimentos: "Frutos secos: 20 g",
+                        macros: ""
+                    },
+                    cena: {
+                        hora: "21:30",
+                        alimentos: "Revuelto de huevos (2)\nPatata: 180 g\nVerduras salteadas",
+                        macros: ""
+                    },
+                    snackExtra: {
+                        alimentos: ""
+                    },
+                    objetivoAgua: "2.5",
+                    caloriasObjetivo: "",
+                    proteinasObjetivo: "",
+                    carbohidratosObjetivo: "",
+                    grasasObjetivo: "",
+                    notas: ""
+                }
+            };
+
+            // Solo cargar si no hay dietas guardadas
+            const dietasGuardadas = localStorage.getItem('dietas');
+            if (!dietasGuardadas || dietasGuardadas === '{}') {
+                localStorage.setItem('dietas', JSON.stringify(dietasPrecargadas));
+                console.log('✅ Dieta semanal precargada');
+            }
+        }
+
+        // Cargar perfil y dieta al iniciar
         cargarPerfil();
+        cargarDietaPrecargada();
 
         // FUNCIONES DE DIETA
         function guardarDieta() {
