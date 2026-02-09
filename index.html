@@ -233,6 +233,28 @@
             border-left: 4px solid #28a745;
         }
 
+        .btn-check {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-check:hover {
+            background: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-check:active {
+            transform: translateY(0);
+        }
+
         .section-title {
             color: #667eea;
             margin: 25px 0 15px 0;
@@ -759,12 +781,18 @@
         // Generar inputs de comidas
         function generarComidas() {
             const comidas = ['Desayuno', 'Media mañana', 'Comida', 'Merienda', 'Cena', 'Snacks extra'];
+            const comidasKeys = ['desayuno', 'mediaManana', 'comida', 'merienda', 'cena', 'snackExtra'];
             const container = document.getElementById('comidas-container');
             
             comidas.forEach((comida, index) => {
                 container.innerHTML += `
                     <div class="meal-row">
-                        <h4>${comida}</h4>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4 style="margin: 0;">${comida}</h4>
+                            <button class="btn-check" onclick="copiarDesdeDieta('${comidasKeys[index]}', ${index})" title="Copiar desde mi dieta planificada">
+                                ✓ Usar mi dieta
+                            </button>
+                        </div>
                         <div class="grid-2">
                             <div class="form-group">
                                 <label>Hora</label>
@@ -772,11 +800,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Qué comí</label>
-                                <input type="text" id="queComi_${index}" placeholder="Avena con frutas...">
+                                <textarea id="queComi_${index}" placeholder="Avena con frutas..." rows="2"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Cantidad aproximada</label>
-                                <input type="text" id="cantidad_${index}" placeholder="1 plato, 200g...">
+                                <input type="text" id="cantidad_${index}" placeholder="Según dieta...">
                             </div>
                             <div class="form-group">
                                 <label>Hambre (1-5): <span class="scale-value" id="hambre_${index}Value">3</span></label>
@@ -1574,6 +1602,58 @@
 
         function cerrarDietaModal() {
             document.getElementById('dietaModal').style.display = 'none';
+        }
+
+        // COPIAR DESDE DIETA PLANIFICADA
+        function copiarDesdeDieta(comidaKey, index) {
+            const fecha = new Date(document.getElementById('fechaDiario').value);
+            const dias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+            const diaSemana = dias[fecha.getDay()];
+            
+            const dietas = JSON.parse(localStorage.getItem('dietas') || '{}');
+            let dieta = dietas[diaSemana] || dietas['general'];
+            
+            if (!dieta) {
+                mostrarMensaje('⚠️ No hay dieta planificada para este día. Ve a "Mi Dieta" para crearla.');
+                return;
+            }
+
+            const comidaDieta = dieta[comidaKey];
+            
+            if (!comidaDieta || !comidaDieta.alimentos) {
+                mostrarMensaje('⚠️ No hay información de esta comida en tu dieta.');
+                return;
+            }
+
+            // Copiar hora
+            if (comidaDieta.hora) {
+                document.getElementById(`hora_${index}`).value = comidaDieta.hora;
+            }
+
+            // Copiar alimentos (con saltos de línea convertidos)
+            if (comidaDieta.alimentos) {
+                document.getElementById(`queComi_${index}`).value = comidaDieta.alimentos;
+            }
+
+            // Copiar cantidad (de los macros si existen)
+            if (comidaDieta.macros) {
+                document.getElementById(`cantidad_${index}`).value = comidaDieta.macros;
+            } else {
+                document.getElementById(`cantidad_${index}`).value = "Según dieta";
+            }
+
+            // Animación de feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ ¡Copiado!';
+            btn.style.background = '#20c997';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '#28a745';
+            }, 1500);
+
+            mostrarMensaje('✅ Comida copiada desde tu dieta. ¡Ahora puedes modificarla si quieres!');
         }
     </script>
 </body>
